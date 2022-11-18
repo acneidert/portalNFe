@@ -1,28 +1,23 @@
-# Portalnfe
+# Portal NFe
 
-<img src='https://raw.githubusercontent.com/nullstack/nullstack/master/nullstack.png' height='60' alt='Nullstack' />
+App para Baixar NFe referenciada à sua empresa
 
-## How to run this Project
+## Como Rodar esta Aplicação
 
-Install the dependencies:
+Instale as dependências...
 
 `npm install`
 
-Copy the environment sample to a .env file
+Copie o ```.env.sample``` para ```.env``` e altere as configurações;
 
-```sh
-NULLSTACK_PROJECT_NAME="[dev] Portalnfe"
-NULLSTACK_PROJECT_DOMAIN="localhost"
-NULLSTACK_PROJECT_COLOR="#D22365"
-NULLSTACK_SERVER_PORT="3000"
-```
+Salve seu certificado na pasta ```cert```
 
-Run the app in development mode:
+Rode o App 
 
 `npm start`
 
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Abra [http://localhost:3000](http://localhost:3000) no Browser.
 
-## Learn more about Nullstack
+Feito com [Nullstack](https://nullstack.app/pt-br)
 
-[Read the documentation](https://nullstack.app/documentation)
+<img src='https://raw.githubusercontent.com/nullstack/nullstack/master/nullstack.png' height='60' alt='Nullstack' />
