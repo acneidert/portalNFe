@@ -28,19 +28,20 @@ class GetNFe extends Nullstack<GetNFeProps> {
       Notify.warning('Digite a Chave da NF-e');
       return
     }
-    if(this.chave.length !== 44){
+    if (this.chave.length !== 44) {
       Notify.warning('A Chave da NF-e deve conter 44 Caracteres! Confira!');
       return
     }
     this.loading = true
     this.response = await this.getSingleNFe({chave: this.chave});
     if(this.response.status === 'success') {
-      const encodedUri = encodeURI(this.response.xml);
+      const encodedUri = encodeURIComponent(this.response.xml);
       const link = document.createElement("a");
-      link.setAttribute("href", encodedUri);
+      link.setAttribute("href", 'data:text/plain;charset=utf-8,' + encodedUri);
       link.setAttribute("download", `${this.response.chave}.xml`);
       document.body.appendChild(link); // Required for FF
       link.click();
+      document.body.removeChild(link);
       this.chave = ''
       Notify.success('Nota Encontrada....')
     } else {
