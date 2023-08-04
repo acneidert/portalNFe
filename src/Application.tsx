@@ -1,6 +1,7 @@
 import Nullstack, { NullstackClientContext, NullstackNode } from 'nullstack';
 import '../tailwind.css';
 import GetNFe from './GetNFe';
+import GetNFeSerpro from './GetNFeSerpro';
 
 declare function Head(): NullstackNode
 
@@ -25,7 +26,8 @@ class Application extends Nullstack {
   render() {
     return (
       <body class="bg-gray-900 text-white font-roboto flex h-screen w-screen justify-center items-center">
-        <GetNFe />
+        <GetNFe route='/' />
+        <GetNFeSerpro route='/serpro' />
       </body>
     )
   }

@@ -11,14 +11,22 @@ type TypeGetSingleNFe = {
   xml?: string;
 }
 
-interface GetNFeProps {
+interface GetNFeSerproProps {
   chave?: string
 }
 
-interface GetNFe {
-  getSingleNFe({chave}: GetNFeProps): Promise<TypeGetSingleNFe>
+interface GetNFeSerpro {
+  getSingleNFe({chave}: GetNFeSerproProps): Promise<TypeGetSingleNFe>
 }
-class GetNFe extends Nullstack<GetNFeProps> {
+
+const ERRORS = {
+  400: "O número da chave informada não é válido.",
+  404: "Não existe NFe com o número da chave informado.",
+  406: "O formato do arquivo de saída deve ser Json/Xml.",
+  500: "Erro interno do servidor."
+}
+
+class GetNFeSerpro extends Nullstack<GetNFeSerproProps> {
   chave: string = '';
   loading: boolean = false;  
   response: TypeGetSingleNFe = { status : null}
@@ -50,29 +58,53 @@ class GetNFe extends Nullstack<GetNFeProps> {
     this.loading = false;
   }
 
-  static async getSingleNFe({ chave, secrets }: NullstackServerContext<GetNFeProps>){
-    const distribuicao = new DistribuicaoDFe({
-      pfx: readFileSync(`./cert/${secrets.certificado}`),
-      passphrase: secrets.pass as string,
-      cnpj: secrets.cnpj as string,
-      cUFAutor: secrets.uf as string,
-      tpAmb: secrets.ambiente as TypeAmbiente,
-    })
-    const consulta = await distribuicao.consultaChNFe(chave)
-    if (consulta.error) {
-      return { status: 'error', chave, error: consulta.error  };
-    } else if (consulta.data.docZip.length < 1 ) {
-      return { status: 'error', chave, error:  consulta.data.xMotivo };
+  static async getSingleNFe({ chave, secrets }: NullstackServerContext<GetNFeSerproProps>){
+    try {
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+      myHeaders.append("Authorization", `Basic ${btoa(secrets.serprokey + ':'+ secrets.serprosecret)}`);
+
+      const urlencoded = new URLSearchParams();
+      urlencoded.append("grant_type", "client_credentials");
+
+      const requestOptions: RequestInit = {
+        method: 'POST',
+        headers: myHeaders,
+        body: urlencoded,
+        redirect: 'follow'
+      };
+
+      const token: {access_token: string} = await (await fetch("https://gateway.apiserpro.serpro.gov.br/token", requestOptions)).json()
+      const xmlHeader = new Headers();
+      xmlHeader.append("Accept", "application/xml");
+      xmlHeader.append("Authorization", `Bearer ${token.access_token}`);
+
+      var requestXmlOptions: RequestInit = {
+        method: 'GET',
+        headers: xmlHeader,
+        redirect: 'follow'
+      };
+
+      const xml = await fetch(`https://gateway.apiserpro.serpro.gov.br/consulta-nfe-df/api/v1/nfe/${chave}`, requestXmlOptions)
+      if(xml.status === 200) {
+        return {
+          status: 'success',
+          chave,
+          xml: await xml.text() ,
+        }
+      } else {
+        return { status: 'error', chave, error: ERRORS[xml.status] };
+      }
+    } catch (error) {
+      return { status: 'error', chave, error };
     }
-    return {
-      status: 'success',
-      chave,
-      xml: consulta.data.docZip[0].xml
-    }
+    
+    
   }
 
-  render({}: NullstackClientContext<GetNFeProps>) {
+  render({}: NullstackClientContext<GetNFeSerproProps>) {
     return <div class='grid justify-items-center w-screen'>
+      <h1 class='p-4 text-2xl'>Esta Consulta é Paga! Use somente se Necessário!</h1>
       <div class='w-4/12'>
         <input type="number" bind={this.chave} class='text-black p-4 w-11/12 placeholder:text-gray-600' placeholder='Digite a Chave da NFe'/>
         <span class='ml-4'>{this.chave.length}</span>
@@ -91,10 +123,10 @@ class GetNFe extends Nullstack<GetNFeProps> {
           }
           Baixar
         </button>
-        <a href='/serpro' class='bg-sky-700 p-4 mt-4 flex items-center'>Serpro</a>
+        <a href='/' class='bg-sky-700 p-4 mt-4 flex items-center'>Voltar</a>
       </div>
     </div>;
   }
 }
 
-export default GetNFe;
+export default GetNFeSerpro;
