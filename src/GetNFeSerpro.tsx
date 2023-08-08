@@ -96,6 +96,7 @@ class GetNFeSerpro extends Nullstack<GetNFeSerproProps> {
         return { status: 'error', chave, error: ERRORS[xml.status] };
       }
     } catch (error) {
+      console.error(error);
       return { status: 'error', chave, error };
     }
     
