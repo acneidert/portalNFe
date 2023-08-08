@@ -5,16 +5,17 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "fs-extra": "^10.1.0",
     "nullstack": "~0.16.0",
     "postcss-loader": "^7.0.1",
-    "tailwindcss": "^3.0.0",
-    "fs-extra": "^10.1.0"
+    "tailwindcss": "^3.0.0"
   },
   "scripts": {
     "start": "npx nullstack start",
     "build": "npx nullstack build && node scripts/build.js"
   },
   "dependencies": {
+    "node-fetch": "^3.3.2",
     "node-mde": "^0.11.0",
     "notiflix": "^3.2.5"
   }

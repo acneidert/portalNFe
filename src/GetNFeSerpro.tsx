@@ -1,9 +1,7 @@
 import Nullstack, { NullstackClientContext, NullstackServerContext } from 'nullstack';
-import { DistribuicaoDFe } from 'node-mde';
-import { readFileSync } from 'fs';
+import fetch, { Headers, RequestInit } from 'node-fetch';
 import { Notify } from 'notiflix';
 
-type TypeAmbiente = '1'| '2'
 type TypeGetSingleNFe = {
   status: 'success' | 'error' | null;
   chave?: string;
@@ -74,7 +72,7 @@ class GetNFeSerpro extends Nullstack<GetNFeSerproProps> {
         redirect: 'follow'
       };
 
-      const token: {access_token: string} = await (await fetch("https://gateway.apiserpro.serpro.gov.br/token", requestOptions)).json()
+      const token: {access_token: string} = await (await fetch("https://gateway.apiserpro.serpro.gov.br/token", requestOptions)).json() as {access_token: string}
       const xmlHeader = new Headers();
       xmlHeader.append("Accept", "application/xml");
       xmlHeader.append("Authorization", `Bearer ${token.access_token}`);
