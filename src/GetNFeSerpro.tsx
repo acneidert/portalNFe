@@ -74,7 +74,7 @@ class GetNFeSerpro extends Nullstack<GetNFeSerproProps> {
 
       const token: {access_token: string} = await (await fetch("https://gateway.apiserpro.serpro.gov.br/token", requestOptions)).json() as {access_token: string}
       const xmlHeader = new Headers();
-      xmlHeader.append("Accept", "application/xml");
+      xmlHeader.append("Accept", "application/json");
       xmlHeader.append("Authorization", `Bearer ${token.access_token}`);
 
       var requestXmlOptions: RequestInit = {
