@@ -1,6 +1,7 @@
 import Nullstack, { NullstackClientContext, NullstackServerContext } from 'nullstack';
 import fetch, { Headers, RequestInit } from 'node-fetch';
 import { Notify } from 'notiflix';
+import { NFe } from './parseNfe';
 
 type TypeGetSingleNFe = {
   status: 'success' | 'error' | null;
@@ -88,7 +89,7 @@ class GetNFeSerpro extends Nullstack<GetNFeSerproProps> {
         return {
           status: 'success',
           chave,
-          xml: await xml.text() ,
+          xml: NFe.parseFromJson(JSON.parse(await xml.text()))  ,
         }
       } else {
         return { status: 'error', chave, error: ERRORS[xml.status] };
